@@ -51,10 +51,14 @@ Build a comprehensive platform that:
 To set up and run this project locally on your machine:
 
 **1. Clone the Repository:**
-```bash
+bash
 git clone [https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git](https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git)
 cd AI-MOCK-MENTOR
 
+**2. Install Frontend Dependencies:**
+```bash
+cd frontend
+npm install
 
 
 
