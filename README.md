@@ -55,39 +55,6 @@ To set up and run this project locally on your machine:
 git clone [https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git](https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git)
 cd AI-MOCK-MENTOR
 
-2. Install Frontend Dependencies:
 
-```Bash
-cd frontend
-npm install
-3. Install Backend Dependencies:
 
-```Bash
-cd ../backend
-npm install
-4. Environment Variables:
-Create a .env file in your backend directory and add your required API keys:
 
-Code snippet
-MONGO_URI=your_mongodb_connection_string
-OPENAI_API_KEY=your_openai_api_key
-5. Run the Application:
-
-Bash
-# In the backend terminal
-npm run dev
-
-# In a new frontend terminal
-npm start
-📦 Folder Structure
-Plaintext
-AI-MOCK-MENTOR/
-├── frontend/        # React.js application
-├── backend/         # Node.js/Express server
-├── ai_services/     # Python scripts for OpenCV/NLP/Speech
-├── models/          # Database Schemas
-├── controllers/     # API logic
-├── routes/          # API endpoints
-└── README.md
-🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page or submit a Pull Request.
