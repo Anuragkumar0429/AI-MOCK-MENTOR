@@ -46,19 +46,5 @@ Build a comprehensive platform that:
 * **Question Bank:** Includes Data Structures & Algorithms (DSA), SQL queries, and Python scripting.
 * **Built-in Tools:** Features an integrated code editor, automatic code evaluation, and time tracking to simulate real technical assessments.
 
-## 🌐 Project Setup
-
-To set up and run this project locally on your machine:
-
-**1. Clone the Repository:**
-bash
-git clone [https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git](https://github.com/Anuragkumar0429/AI-MOCK-MENTOR.git)
-cd AI-MOCK-MENTOR
-
-**2. Install Frontend Dependencies:**
-```bash
-cd frontend
-npm install
-
 
 
