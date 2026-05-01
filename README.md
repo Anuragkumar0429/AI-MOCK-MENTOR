@@ -129,27 +129,25 @@ A full **in-browser technical assessment environment**:
 | **Database** | MongoDB / Firebase | User data, session history, analytics |
 | **Auth** | JWT + OAuth 2.0 | Secure user authentication |
 
----
-
 ## 🏗️ System Architecture
-┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                         │
-│              React.js  ·  Tailwind CSS  ·  WebRTC           │
-└──────────────────────────┬──────────────────────────────────┘
-│ HTTPS / WebSocket
-┌──────────────────────────▼──────────────────────────────────┐
-│                        API GATEWAY                          │
-│              Node.js  ·  Express.js  ·  JWT Auth            │
-└──────┬──────────────────┬──────────────────────┬────────────┘
-│                  │                      │
-┌──────▼───────┐  ┌───────▼──────┐  ┌───────────▼───────────┐
-│   MongoDB    │  │  AI Service  │  │    Media Processor    │
-│  (Sessions,  │  │  FastAPI +   │  │   OpenCV · MediaPipe  │
-│   Profiles)  │  │  OpenAI API  │  │   Speech Recognition  │
-└──────────────┘  └──────────────┘  └───────────────────────┘
 
----
-
+```
+┌──────────────────────────────────────────────┐
+│                  CLIENT LAYER                │
+│      React.js  ·  Tailwind CSS  ·  WebRTC   │
+└─────────────────────┬────────────────────────┘
+                      │  HTTPS / WebSocket
+┌─────────────────────▼────────────────────────┐
+│                  API GATEWAY                 │
+│      Node.js  ·  Express.js  ·  JWT Auth    │
+└──────┬──────────────┬──────────────┬─────────┘
+       │              │              │
+┌──────▼──────┐ ┌─────▼──────┐ ┌───▼────────────┐
+│   MongoDB   │ │ AI Service │ │ Media Processor │
+│  Sessions   │ │  FastAPI + │ │ OpenCV·MediaPipe│
+│  Profiles   │ │ OpenAI API │ │ Speech Recog.  │
+└─────────────┘ └────────────┘ └────────────────┘
+```
 ## 🚀 Getting Started
 
 ### ✅ Prerequisites
@@ -215,47 +213,41 @@ ALLOWED_ORIGINS=http://localhost:5173
 
 Open [http://localhost:5173](http://localhost:5173) and start your mock interview! 🎉
 
----
-
 ## 📁 Project Structure
+
+```
 ai-mock-mentor/
+├── 📂 client/                   # React.js Frontend
+│   └── src/
+│       ├── components/          # Reusable UI components
+│       ├── pages/
+│       │   ├── Dashboard.jsx
+│       │   ├── Interview.jsx    # Live interview room
+│       │   ├── CodingMode.jsx   # Technical coding round
+│       │   └── Report.jsx       # Performance analytics
+│       ├── hooks/
+│       ├── context/
+│       └── services/
 │
-├── 📂 client/                    # React.js Frontend
-│   ├── src/
-│   │   ├── components/           # Reusable UI components
-│   │   ├── pages/
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Interview.jsx     # Live interview room
-│   │   │   ├── CodingMode.jsx    # Technical coding round
-│   │   │   └── Report.jsx        # Performance analytics
-│   │   ├── hooks/
-│   │   ├── context/
-│   │   └── services/
-│   └── package.json
-│
-├── 📂 server/                    # Node.js + Express Backend
+├── 📂 server/                   # Node.js + Express Backend
 │   ├── controllers/
 │   ├── models/
 │   ├── routes/
-│   ├── middleware/
-│   └── package.json
+│   └── middleware/
 │
-├── 📂 ai-service/                # Python AI Engine (FastAPI)
+├── 📂 ai-service/               # Python AI Engine (FastAPI)
 │   ├── routers/
 │   │   ├── questions.py
 │   │   ├── feedback.py
 │   │   └── vision.py
-│   ├── services/
-│   │   ├── llm_service.py
-│   │   ├── nlp_service.py
-│   │   └── cv_service.py
-│   ├── main.py
-│   └── requirements.txt
+│   └── services/
+│       ├── llm_service.py
+│       ├── nlp_service.py
+│       └── cv_service.py
 │
 ├── docker-compose.yml
 └── README.md
----
-
+```
 ## 🗺️ Roadmap
 
 - [ ] 🔄 Core AI interview engine (GPT-4 integration)
