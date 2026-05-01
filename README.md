@@ -132,22 +132,22 @@ A full **in-browser technical assessment environment**:
 ---
 
 ## 🏗️ System Architecture
-
 ┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                          │
+│                        CLIENT LAYER                         │
 │              React.js  ·  Tailwind CSS  ·  WebRTC           │
 └──────────────────────────┬──────────────────────────────────┘
 │ HTTPS / WebSocket
 ┌──────────────────────────▼──────────────────────────────────┐
-│                        API GATEWAY                           │
+│                        API GATEWAY                          │
 │              Node.js  ·  Express.js  ·  JWT Auth            │
 └──────┬──────────────────┬──────────────────────┬────────────┘
 │                  │                      │
 ┌──────▼───────┐  ┌───────▼──────┐  ┌───────────▼───────────┐
-│   MongoDB    │  │  AI Service  │  │    Media Processor     │
-│  (Sessions,  │  │  FastAPI +   │  │   OpenCV · MediaPipe   │
-│   Profiles)  │  │  OpenAI API  │  │   Speech Recognition   │
+│   MongoDB    │  │  AI Service  │  │    Media Processor    │
+│  (Sessions,  │  │  FastAPI +   │  │   OpenCV · MediaPipe  │
+│   Profiles)  │  │  OpenAI API  │  │   Speech Recognition  │
 └──────────────┘  └──────────────┘  └───────────────────────┘
+
 ---
 
 ## 🚀 Getting Started
@@ -165,7 +165,7 @@ mongodb >= 6.0
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-mock-mentor.git
+git clone https://github.com/AnuragKumar0429/ai-mock-mentor.git
 cd ai-mock-mentor
 ```
 
@@ -218,7 +218,6 @@ Open [http://localhost:5173](http://localhost:5173) and start your mock intervie
 ---
 
 ## 📁 Project Structure
-
 ai-mock-mentor/
 │
 ├── 📂 client/                    # React.js Frontend
@@ -255,16 +254,15 @@ ai-mock-mentor/
 │
 ├── docker-compose.yml
 └── README.md
-
 ---
 
 ## 🗺️ Roadmap
 
-- [x] Core AI interview engine (GPT-4 integration)
-- [x] Text-based mock interview sessions
-- [x] Real-time performance scoring
-- [x] Coding interview mode with code editor
-- [x] Resume parsing & personalized questions
+- [ ] 🔄 Core AI interview engine (GPT-4 integration)
+- [ ] 🔄 Text-based mock interview sessions
+- [ ] 🔄 Real-time performance scoring
+- [ ] 🔄 Coding interview mode with code editor
+- [ ] 🔄 Resume parsing & personalized questions
 - [ ] 🔄 Voice mode with real-time transcription
 - [ ] 🔄 Video mode with emotion & confidence analysis
 - [ ] 🔄 Group Discussion / GD simulation mode
@@ -297,10 +295,9 @@ git push origin feature/AmazingFeature
 
 <div align="center">
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/YOUR_PROFILE)
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/YOUR_HANDLE)
-[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://yourportfolio.dev)
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your.email@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/anurag-kumar-upadhyay-9a2105285/)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:akupadhaya01@gmail.com)
+[![GitHub](https://img.shields.io/badge/GitHub-171515?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AnuragKumar0429)
 
 </div>
 
@@ -327,6 +324,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 **If this project helped you, please ⭐ star the repo — it means the world!**
 
-Made with ❤️ by **[Your Name](https://github.com/YOUR_USERNAME)**
+Made with ❤️ by **[Anurag Kumar Upadhyay](https://github.com/AnuragKumar0429)**
 
 </div>
