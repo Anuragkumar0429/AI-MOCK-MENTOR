@@ -132,3 +132,201 @@ A full **in-browser technical assessment environment**:
 ---
 
 ## 🏗️ System Architecture
+
+┌─────────────────────────────────────────────────────────────┐
+│                        CLIENT LAYER                          │
+│              React.js  ·  Tailwind CSS  ·  WebRTC           │
+└──────────────────────────┬──────────────────────────────────┘
+│ HTTPS / WebSocket
+┌──────────────────────────▼──────────────────────────────────┐
+│                        API GATEWAY                           │
+│              Node.js  ·  Express.js  ·  JWT Auth            │
+└──────┬──────────────────┬──────────────────────┬────────────┘
+│                  │                      │
+┌──────▼───────┐  ┌───────▼──────┐  ┌───────────▼───────────┐
+│   MongoDB    │  │  AI Service  │  │    Media Processor     │
+│  (Sessions,  │  │  FastAPI +   │  │   OpenCV · MediaPipe   │
+│   Profiles)  │  │  OpenAI API  │  │   Speech Recognition   │
+└──────────────┘  └──────────────┘  └───────────────────────┘
+---
+
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+
+```bash
+node >= 18.0.0
+npm  >= 9.0.0
+python >= 3.10
+mongodb >= 6.0
+```
+
+### 📦 Installation
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/YOUR_USERNAME/ai-mock-mentor.git
+cd ai-mock-mentor
+```
+
+**2. Setup the Frontend**
+```bash
+cd client
+npm install
+cp .env.example .env
+npm run dev
+```
+
+**3. Setup the Backend (Node.js)**
+```bash
+cd server
+npm install
+cp .env.example .env
+npm run dev
+```
+
+**4. Setup the AI Service (Python)**
+```bash
+cd ai-service
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn main:app --reload
+```
+
+**5. Environment Variables**
+
+```env
+# Frontend (.env)
+VITE_API_BASE_URL=http://localhost:5000
+VITE_AI_SERVICE_URL=http://localhost:8000
+
+# Backend (.env)
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/aimockmentor
+JWT_SECRET=your_jwt_secret_here
+OPENAI_API_KEY=your_openai_api_key_here
+
+# AI Service (.env)
+OPENAI_API_KEY=your_openai_api_key_here
+ALLOWED_ORIGINS=http://localhost:5173
+```
+
+Open [http://localhost:5173](http://localhost:5173) and start your mock interview! 🎉
+
+---
+
+## 📁 Project Structure
+
+ai-mock-mentor/
+│
+├── 📂 client/                    # React.js Frontend
+│   ├── src/
+│   │   ├── components/           # Reusable UI components
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Interview.jsx     # Live interview room
+│   │   │   ├── CodingMode.jsx    # Technical coding round
+│   │   │   └── Report.jsx        # Performance analytics
+│   │   ├── hooks/
+│   │   ├── context/
+│   │   └── services/
+│   └── package.json
+│
+├── 📂 server/                    # Node.js + Express Backend
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   └── package.json
+│
+├── 📂 ai-service/                # Python AI Engine (FastAPI)
+│   ├── routers/
+│   │   ├── questions.py
+│   │   ├── feedback.py
+│   │   └── vision.py
+│   ├── services/
+│   │   ├── llm_service.py
+│   │   ├── nlp_service.py
+│   │   └── cv_service.py
+│   ├── main.py
+│   └── requirements.txt
+│
+├── docker-compose.yml
+└── README.md
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Core AI interview engine (GPT-4 integration)
+- [x] Text-based mock interview sessions
+- [x] Real-time performance scoring
+- [x] Coding interview mode with code editor
+- [x] Resume parsing & personalized questions
+- [ ] 🔄 Voice mode with real-time transcription
+- [ ] 🔄 Video mode with emotion & confidence analysis
+- [ ] 🔄 Group Discussion / GD simulation mode
+- [ ] 🔄 Mobile app (React Native)
+- [ ] 🔄 Company-specific interview packs (Google, Amazon, etc.)
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community thrive. Any contribution you make is **greatly appreciated**!
+
+```bash
+# Fork the project
+# Create your feature branch
+git checkout -b feature/AmazingFeature
+
+# Commit your changes
+git commit -m "feat: add AmazingFeature"
+
+# Push to the branch
+git push origin feature/AmazingFeature
+
+# Open a Pull Request
+```
+
+---
+
+## 📬 Connect With Me
+
+<div align="center">
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/YOUR_PROFILE)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/YOUR_HANDLE)
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://yourportfolio.dev)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your.email@gmail.com)
+
+</div>
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+
+---
+
+## 🙏 Acknowledgements
+
+- [OpenAI](https://openai.com) — For the powerful GPT-4 API
+- [Shields.io](https://shields.io) — For beautiful badges
+- [Capsule Render](https://github.com/kyechan99/capsule-render) — For the animated banner
+- [FastAPI](https://fastapi.tiangolo.com) — For the blazing-fast Python API layer
+
+---
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:24243e,50:302b63,100:0f0c29&height=120&section=footer&animation=fadeIn" width="100%"/>
+
+**If this project helped you, please ⭐ star the repo — it means the world!**
+
+Made with ❤️ by **[Your Name](https://github.com/YOUR_USERNAME)**
+
+</div>
