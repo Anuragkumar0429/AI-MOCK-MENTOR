@@ -83,35 +83,36 @@ app.post('/question', async (req, res) => {
 
   const systemPrompt = `You are an expert technical interviewer conducting a ${domainContext} interview.
 Experience level: ${exp}.
-${resumeContext}Generate ONE clear, professional interview question.
-CRITICAL: 
-- Generate a COMPLETELY DIFFERENT question each time
-- Do NOT repeat any topic or question type from previous questions
-- Vary question types: technical, behavioural, scenario-based, case study, coding challenge, system design, etc.
-- Make it specific and relevant to the domain.
-- If a resume is provided, reference the candidate's actual experience, skills, or projects.
-- Do NOT number the question. Do NOT include your own answer or hints.
-- Return ONLY the question text, nothing else.`;
+${resumeContext}
+📌 INSTRUCTIONS FOR GENERATING UNIQUE QUESTIONS:
+1. Each question MUST be different from all previously asked questions
+2. Do NOT repeat or rephrase any previous question
+3. Vary question types: technical, behavioural, scenario-based, case study, coding challenge, system design
+4. If resume provided: reference candidate's specific experience and skills
+5. Make questions progressively harder as the interview continues
+6. Return ONLY the question text, nothing else - no numbers, no preamble
+
+${history.trim() ? '⚠️ REMEMBER: Look at previous questions and ask something COMPLETELY DIFFERENT' : ''}
+
+Generate ONE clear, professional interview question:`;
 
   const userPrompt = history.trim()
-    ? `Previous interview exchange:\n${history.slice(-5000)}\n\n⚠️ IMPORTANT: Generate the NEXT UNIQUE interview question. This must be DIFFERENT from all previous questions. Analyze what was already asked and generate something completely different. If technical questions were asked, ask behavioural. If theory was discussed, ask practical. Be creative and diverse.`
-    : 'Generate the first interview question based on my resume.';
+    ? `Previous conversation:\n${history.slice(-4000)}\n\nGenerate the NEXT question that is DIFFERENT from everything above.`
+    : 'Generate the first interview question.';
 
-  const fullPrompt = `${systemPrompt}\n\nTask: ${userPrompt}`;
+  const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
 
   try {
+    console.log('[question] Request received:', { topic, exp, hasResume: !!resume, hasHistory: !!history });
+    
     // Using Gemini 2.5 Flash for fast, free generations
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-      generationConfig: {
-        temperature: 0.9, // Higher temperature = more creative/varied responses
-        topP: 0.95,
-        topK: 40,
-      }
+    const result = await model.generateContent(fullPrompt, {
+      temperature: 0.85,
     });
     
     const question = result.response.text().trim() || 'Tell me about yourself and your background.';
+    console.log('[question] Generated:', question.substring(0, 80) + '...');
     return res.json({ question });
   } catch (err) {
     console.error('[question]', err.message);
