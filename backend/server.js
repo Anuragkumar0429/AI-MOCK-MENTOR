@@ -103,19 +103,22 @@ Generate ONE clear, professional interview question:`;
   const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
 
   try {
-    console.log('[question] Request received:', { topic, exp, hasResume: !!resume, hasHistory: !!history });
+    console.log('[question] Request received:', { topic, exp, hasResume: !!resume, historyLength: history.length });
+    console.log('[question] Full prompt:', fullPrompt.substring(0, 200) + '...');
     
     // Using Gemini 2.5 Flash for fast, free generations
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-    const result = await model.generateContent(fullPrompt, {
-      temperature: 0.85,
-    });
+    
+    const result = await model.generateContent(fullPrompt);
     
     const question = result.response.text().trim() || 'Tell me about yourself and your background.';
-    console.log('[question] Generated:', question.substring(0, 80) + '...');
+    console.log('[question] Generated:', question.substring(0, 100) + '...');
+    console.log('[question] Response status:', result.response.candidates?.[0]?.finishReason);
+    
     return res.json({ question });
   } catch (err) {
-    console.error('[question]', err.message);
+    console.error('[question] ERROR:', err.message);
+    console.error('[question] Full error:', err);
     return res.status(500).json({
       question: 'Could you walk me through a challenging project you worked on and the technical decisions you made?',
       error: 'AI unavailable — using fallback question.',
