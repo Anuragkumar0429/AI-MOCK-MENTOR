@@ -5,87 +5,88 @@ import fileUpload from 'express-fileupload';
 import { createRequire } from 'module';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Setup required for PDF parsing in ES Modules
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 
-// Load environment variables
 dotenv.config();
 const app = express();
-
-// Initialize the Google Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// EXTRA-STRICT CORS FOR SAFARI & DEPLOYMENT
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type']
-}));
-
+app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
-// 📄 ROUTE 1: THE PDF PARSER
+// 📄 1. PDF PARSER ROUTE
 app.post('/parse-pdf', async (req, res) => {
-    console.log("📥 [PDF] UPLOAD REQUEST RECEIVED");
     try {
-        if (!req.files || !req.files.resumeFile) {
-            return res.status(200).json({ text: "Default Resume Text: Full Stack Developer." });
-        }
-
-        const uploadedFile = req.files.resumeFile;
-        try {
-            const data = await pdfParse(uploadedFile.data);
-            console.log("✅ PDF Parsed Successfully");
-            return res.status(200).json({ text: data.text || "Extracted text was empty." });
-        } catch (e) {
-            console.log("⚠️ Parser failed, sending fallback.");
-            return res.status(200).json({ text: "Candidate with AI and Web Dev skills." });
-        }
+        if (!req.files || !req.files.resumeFile) return res.json({ text: "" });
+        const data = await pdfParse(req.files.resumeFile.data);
+        res.json({ text: data.text });
     } catch (error) {
-        return res.status(200).json({ text: "Fallback: Software Engineering Student." });
+        res.json({ text: "" });
     }
 });
 
-// 🧠 ROUTE 2: THE REAL AI INTERVIEWER
+// 🧠 2. THE FIXED AI QUESTION ROUTE
 app.post('/question', async (req, res) => {
-    console.log("🤖 [AI] QUESTION REQUEST RECEIVED");
     try {
-        const { resume, history } = req.body;
-        
-        // Connect to the fastest Gemini model
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
-        // Give the AI its personality and instructions
-        const prompt = `You are a professional technical interviewer named MockMentor. 
-        Here is the candidate's extracted resume text: "${resume}"
-        
-        Here is the conversation history so far:
-        ${history || "No history yet. This is the first question."}
-        
-        INSTRUCTIONS:
-        1. Based on their resume and the history, ask exactly ONE logical follow-up interview question.
-        2. Do not answer the question for them.
-        3. Do not break character. 
-        4. Keep it professional, concise, and do not repeat previous questions.`;
+        const { resume, history, topic, exp } = req.body;
+        console.log("\n--- NEW QUESTION REQUEST ---");
+        console.log("History Received?:", history ? "YES" : "EMPTY");
 
-        // Generate the question
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const prompt = `You are a strict Technical Interviewer.
+        RESUME: ${resume}
+        CONTEXT: The user is applying for a ${exp} ${topic} role.
+        
+        CURRENT CONVERSATION LOG:
+        ${history || "No questions have been asked yet."}
+
+        INSTRUCTION: 
+        - Review the LOG above carefully.
+        - You MUST NOT ask a question that has already been asked.
+        - You MUST NOT repeat topics already covered.
+        - Ask the NEXT logical technical interview question. 
+        - Be concise. One question only.`;
+
         const result = await model.generateContent(prompt);
-        const nextQuestion = result.response.text();
-        
-        console.log("✅ AI Generated a question.");
-        res.json({ question: nextQuestion.trim() });
-
+        const nextQuestion = result.response.text().trim();
+        res.json({ question: nextQuestion });
     } catch (error) {
-        console.error("🔥 AI Error:", error);
-        res.json({ question: "That is an interesting point. Could you elaborate a bit more on your technical process?" }); 
+        console.error("🔥 AI Error:", error.message);
+        res.json({ question: "Could you explain your favorite technical project?" });
     }
 });
 
-// 🔗 SERVER LISTENER 
+// 📊 3. THE RESTORED GRADING ROUTE
+app.post('/grade', async (req, res) => {
+    try {
+        const { transcript } = req.body;
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        
+        const prompt = `You are an expert technical recruiter evaluating an interview.
+        TRANSCRIPT:
+        ${transcript}
+        
+        Provide a JSON response evaluating the candidate. Use exactly this format:
+        {"score": 85, "feedback": "Your detailed feedback here."}
+        Respond ONLY with valid JSON. Do not include markdown formatting like \`\`\`json.`;
+
+        const result = await model.generateContent(prompt);
+        let responseText = result.response.text().trim();
+        
+        // Clean up markdown just in case the AI includes it
+        if (responseText.startsWith('```json')) {
+            responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+        }
+
+        res.json(JSON.parse(responseText));
+    } catch (error) {
+        console.error("🔥 Grading Error:", error.message);
+        res.json({ score: 0, feedback: "Error grading the interview. Please check your backend logs." });
+    }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n✅ MOCK MENTOR BACKEND IS LIVE`);
-    console.log(`👉 Running on port: ${PORT}`);
+    console.log(`✅ Backend running on port ${PORT}`);
 });

@@ -1,68 +1,55 @@
-/**
- * api.js — All backend calls in one place.
- * Uses Vite proxy in dev (no CORS) and VITE_API_URL in production.
- */
+// frontend/src/api.js
 
-const BASE = import.meta.env.VITE_API_URL || '';
-
-// Log the API base URL for debugging
-if (BASE) {
-  console.log('[API] Using backend URL:', BASE);
-} else {
-  console.log('[API] Using Vite proxy (localhost development)');
-}
-
-async function request(path, options = {}) {
-  const url = `${BASE}${path}`;
-  console.log(`[API] ${options.method || 'GET'} ${url}`);
-  
+// 1. THE FIXED AI QUESTION MATCHER
+export const fetchQuestion = async ({ topic, resume, history, exp }) => {
   try {
-    const res = await fetch(url, options);
-    
-    if (!res.ok) {
-      console.error(`[API] Error: ${res.status} ${res.statusText}`);
-    }
-    
-    const data = await res.json().catch(() => ({}));
-    
-    if (!res.ok) {
-      console.error(`[API] Response error:`, data);
-      throw new Error(data.error || `HTTP ${res.status}`);
-    }
-    
-    return data;
-  } catch (err) {
-    console.error(`[API] Request failed for ${url}:`, err.message);
-    throw err;
+    const response = await fetch("http://localhost:4000/question", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic, resume, history, exp }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching question:", error);
+    return { question: "Could you elaborate on your technical experience?" };
   }
-}
+};
 
-/** Extract text from a PDF File object */
-export async function extractPdfText(file) {
-  const form = new FormData();
-  form.append('resumeFile', file);
-  return request('/extract-text', { method: 'POST', body: form });
-}
+// 2. THE RESTORED PDF PARSER
+export const extractPdfText = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("resumeFile", file);
 
-/** Generate the next interview question */
-export async function fetchQuestion({ topic, resume, history, exp }) {
-  return request('/question', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ topic, resume, history, exp }),
-  });
-}
+    const response = await fetch("http://localhost:4000/parse-pdf", {
+      method: "POST",
+      body: formData, 
+    });
 
-/** Grade the full interview transcript */
-export async function gradeTranscript(transcript) {
-  return request('/answer', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ answer: transcript }),
-  });
-}
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.text;
+  } catch (error) {
+    console.error("Error extracting PDF text:", error);
+    return ""; 
+  }
+};
 
-/** Health check */
-export async function healthCheck() {
-  return request('/health');
-}
+// 3. THE RESTORED GRADING FUNCTION (Fixes your white screen!)
+export const gradeTranscript = async (transcript) => {
+  try {
+    const response = await fetch("http://localhost:4000/grade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcript }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error grading transcript:", error);
+    return { score: 0, feedback: "Error generating your final score." };
+  }
+};

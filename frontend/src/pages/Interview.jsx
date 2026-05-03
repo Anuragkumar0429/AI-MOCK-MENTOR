@@ -91,13 +91,18 @@ export default function Interview() {
   }, []);
 
   /* ── Fetch question ── */
-  const getQuestion = useCallback(async (hist) => {
+  const getQuestion = useCallback(async (currentHistory) => {
     setLoadingQ(true);
     setFinalTranscript('');
     setInterimText('');
     setTextAnswer('');
     try {
-      const data = await fetchQuestion({ topic: config.domain, resume, history: hist, exp: config.exp });
+      const data = await fetchQuestion({ 
+        topic: config.domain, 
+        resume, 
+        history: currentHistory, 
+        exp: config.exp 
+      });
       setQuestion(data.question || 'Could you describe a challenging project you worked on?');
     } catch {
       setQuestion('Could you walk me through a project you are proud of and explain the technical decisions you made?');
@@ -125,19 +130,24 @@ export default function Interview() {
     if (!answer) return;
 
     setSubmitting(true);
-    const entry   = `\nAI: ${question}\nUser: ${answer}`;
-    const newHist = history + entry;
-    setHistory(newHist);
+    
+    // 🛑 CRITICAL FIX: Build history MANUALLY here
+    const currentTurn = `\nInterviewer: ${question}\nCandidate: ${answer}`;
+    const updatedHistoryForAPI = history + currentTurn;
+    
+    // Set state for next time
+    setHistory(updatedHistoryForAPI); 
 
     if (questionNum >= TOTAL) {
       const stats = JSON.parse(localStorage.getItem('mockMentorStats') || '{"totalInterviews":0,"scores":[]}');
       stats.totalInterviews += 1;
       localStorage.setItem('mockMentorStats', JSON.stringify(stats));
-      localStorage.setItem('mockMentorTranscript', newHist);
-      navigate('/results', { state: { transcript: newHist } });
+      localStorage.setItem('mockMentorTranscript', updatedHistoryForAPI);
+      navigate('/results', { state: { transcript: updatedHistoryForAPI } });
     } else {
       setQuestionNum(n => n + 1);
-      await getQuestion(newHist);
+      // 🛑 CRITICAL FIX: Pass the newly built string directly to the fetch function
+      await getQuestion(updatedHistoryForAPI);
     }
     setSubmitting(false);
   };
