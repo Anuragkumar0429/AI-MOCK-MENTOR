@@ -5,12 +5,36 @@
 
 const BASE = import.meta.env.VITE_API_URL || '';
 
+// Log the API base URL for debugging
+if (BASE) {
+  console.log('[API] Using backend URL:', BASE);
+} else {
+  console.log('[API] Using Vite proxy (localhost development)');
+}
+
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
-  const res  = await fetch(url, options);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-  return data;
+  console.log(`[API] ${options.method || 'GET'} ${url}`);
+  
+  try {
+    const res = await fetch(url, options);
+    
+    if (!res.ok) {
+      console.error(`[API] Error: ${res.status} ${res.statusText}`);
+    }
+    
+    const data = await res.json().catch(() => ({}));
+    
+    if (!res.ok) {
+      console.error(`[API] Response error:`, data);
+      throw new Error(data.error || `HTTP ${res.status}`);
+    }
+    
+    return data;
+  } catch (err) {
+    console.error(`[API] Request failed for ${url}:`, err.message);
+    throw err;
+  }
 }
 
 /** Extract text from a PDF File object */
